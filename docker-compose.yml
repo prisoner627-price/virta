@@ -1,0 +1,61 @@
+version: "3.8"
+services:
+    app:
+        build: ./docker/php
+        container_name: virta-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+            - ./docker/php/custome-php-ini.ini:/usr/local/etc/php/conf.d/custome-php-ini.ini
+            - ./docker/php/custome-php-fpm.conf:/usr/local/etc/php-fpm.d/www2.conf
+        networks:
+            - virta
+        depends_on:
+            - mysql
+    nginx:
+        image: nginx:alpine
+        container_name: virta-nginx
+        restart: unless-stopped
+        working_dir: /var/www/
+        ports:
+            - "8000:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx:/etc/nginx/conf.d/
+            - ./storage/logs/nginx:/var/log/nginx
+        networks:
+            - virta
+    mysql:
+        image: mysql:8
+        container_name: virta-mysql
+        restart: unless-stopped
+        volumes:
+            - 'virtaDBData:/var/lib/mysql'
+        environment:
+            MYSQL_DATABASE: "${DB_DATABASE}"
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+        ports:
+            - "3306:3306"
+        networks:
+            - virta
+    swagger:
+        container_name: virta-swagger
+        image: swaggerapi/swagger-ui
+        depends_on:
+            - app
+        volumes:
+            - ./:/var/www
+        ports:
+            - "${SWAGGER_PORT:-8001}:8080"
+        environment:
+            - SWAGGER_JSON=/var/www/wiki/swagger.yml
+
+networks:
+    virta:
+        driver: bridge
+
+volumes:
+    virtaDBData:
