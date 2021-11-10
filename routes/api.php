@@ -19,3 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('companies', CompanyController::class);
+
+Route::apiResource('stations', StationController::class);

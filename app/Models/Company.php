@@ -13,4 +13,9 @@ class Company extends Model
     {
         return $this->belongsTo(Company::class, 'parent_id');
     }
+
+    public function stations()
+    {
+        return $this->hasMany(Station::class);
+    }
 }
