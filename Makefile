@@ -12,3 +12,6 @@ install:
 
 shell:
 	docker-compose exec app bash
+
+db:
+	docker-compose exec app php artisan migrate
