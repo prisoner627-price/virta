@@ -4,13 +4,13 @@ namespace App\Repositories\Station;
 
 use App\Models\Station;
 use App\Specifications\Pagination;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\BaseRepository;
 use App\Specifications\Specification;
 use Illuminate\Database\Eloquent\Model;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 
 class StationRepository extends BaseRepository
 {
