@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+    title: 'Virta API documentation'
+    contact:
+        email: amirreza.developer@gmail.com
+    license:
+        name: 'Apache 2.0'
+        url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local Server
+paths:
+    /api/companies:
+        get:
+            tags:
+                - 'Company'
+            summary: 'The paginated list of cpmpanies'
+            parameters:
+                - $ref: '#/components/parameters/Page'
+                - $ref: '#/components/parameters/PerPage'
+                - $ref: '#/components/parameters/CompanyName'
+            responses:
+                200:
+                    $ref: '#/components/responses/CompanyListResponse'
+components:
+    parameters:
+        Page:
+            name: page
+            in: query
+            description: 'page number'
+            required: false
+            schema:
+                type: integer
+        PerPage:
+            name: perPage
+            in: query
+            description: 'number of elements per page.'
+            required: false
+            schema:
+                type: integer
+        CompanyName:
+            name: name
+            in: query
+            description: 'parts of company name.'
+            required: false
+            schema:
+                type: string
+    schemas:
+        CompanyItem:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 5
+                name:
+                    type: string
+                parent:
+                    type: object
+                    $ref: '#/components/schemas/CompanyItem'
+        Pagination:
+            type: object
+            properties:
+                links:
+                    type: object
+                    properties:
+                        first:
+                            type: string
+                            description: 'link to first page'
+                        last:
+                            type: string
+                            description: 'link to last page'
+                        prev:
+                            type: string
+                            description: 'previous page link'
+                        next:
+                            type: string
+                            description: 'next page link'
+                meta:
+                    type: object
+                    properties:
+                        current_page:
+                            type: integer
+                            description: 'current page number'
+                        from:
+                            type: integer
+                            description: 'from index'
+                        last_page:
+                            type: integer
+                            description: 'number of last page'
+                        path:
+                            type: string
+                            description: 'path of current page'
+                        per_page:
+                            type: integer
+                            description: 'number of items per page'
+                        to:
+                            type: integer
+                            description: 'to index'
+                        total:
+                            type: integer
+                            description: 'number of items in total'
+    responses:
+        CompanyListResponse:
+            description: 'Paginated list of companies'
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/Pagination'
+                            - type: array
+                              items:
+                                type: object
+                                $ref: '#/components/schemas/CompanyItem'
